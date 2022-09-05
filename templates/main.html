@@ -1,22 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
 </head>
 <body class="align">
 
-    <h3>Enter your password</h3>
-  
     <form>
-  
+      <h3 class="align">이메일 주소를 입력해주세요!</h3>
       <div class="form__field">
-        <input type="password" class="form__input" pattern=".{6,}" required>
+        <input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form__input" required/>
         <span class="icon"></span>
       </div>
-  
+      <p><button class="button-3" role="button">구독하기</button></p>
     </form>
-  
-    <p>Password must be six or more characters</p>
-  
   </body>
   </html>
