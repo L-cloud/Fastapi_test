@@ -1,8 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static") 
 
-
-@app.get("/files/{file_path:path}")
-async def read_file(file_path: str):
-    return {"file_path": file_path}
+@app.get("/", response_class=HTMLResponse)
+async def read_items(request: Request):
+    return templates.TemplateResponse('main.html',{"request" : request})
