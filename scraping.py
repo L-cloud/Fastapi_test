@@ -1,4 +1,4 @@
-import requests
+import requests,time
 from bs4 import BeautifulSoup
 from typing import List, Dict
 class Naver_Journal:
@@ -11,9 +11,11 @@ class Naver_Journal:
         self.code = code
     def get_url_headline(self) -> List[str]: 
         # 여기 get에 대한 오류도 해야함
+        start = time.time()
         req = requests.get(self.url + self.code)
         bs = BeautifulSoup(req.text,'html.parser')
         a = bs.find('a',{"class":"press_edit_news_link"})
+        print(f'{time.time()-start:.3f}ms') # 응답 속도 비교
         return [a.find(class_ = "press_edit_news_title").text, a['href']]
 
 class Investing:
@@ -28,17 +30,21 @@ class Investing:
         self.country = country # Message 에 들어갈 녀석
     def get_interest_rage(self) -> Dict[str,Dict[str,List]]:
         message = [[self.country]]
+        start = time.time()
         for n,c in self.code:
             req = requests.get(self.url + c,headers = self.headers)
             bs = BeautifulSoup(req.text, 'html.parser')
-            m = bs.find('div',{"class" :"top bold inlineblock"}).text.split()
+            m = bs.find('div',{"class" :"top bold inlineblock"}).text.split() 
             message.append([n] + m) # 3개월 ['3.195', '+0.004', '+0.13%']
+        print(f'{time.time()-start:.3f}ms')# 응답 속도 비교
         return message
 
 naver= ["25212", "25162"]
-investing = {'미국':[["10년 물","u.s.-10-year-bond-yield"],["3년 물","u.s.-3-year-bond-yield"]]}
+investing = {'미국':[["10년 물","u.s.-10-year-bond-yield"],["3년 물","u.s.-3-year-bond-yield"]],
+'그리스' : [["5년 물", "greece-5-year-bond-yield"],["10년 물", "greece-5-year-bond-yield"]],
+'독일':[['5년 물','germany-5-year-bond-yield'],['10년 물','germany-10-year-bond-yield']]}
 
-# for i in naver:
-#     print(Naver_Journal(i).get_url_headline())
-# for i in investing:
-#     print(Investing(investing[i],i).get_interest_rage())
+for i in naver:
+    print(Naver_Journal(i).get_url_headline())
+for i in investing:
+    print(Investing(investing[i],i).get_interest_rage())
