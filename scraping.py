@@ -1,4 +1,4 @@
-import requests,time
+import requests
 from bs4 import BeautifulSoup
 from typing import List, Dict
 class Naver_Journal:
@@ -11,11 +11,9 @@ class Naver_Journal:
         self.code = code
     def get_url_headline(self) -> List[str]: 
         # 여기 get에 대한 오류도 해야함
-        start = time.time()
         req = requests.get(self.url + self.code)
         bs = BeautifulSoup(req.text,'html.parser')
         a = bs.find('a',{"class":"press_edit_news_link"})
-        print(f'{time.time()-start:.3f}ms') # 응답 속도 비교
         return [a.find(class_ = "press_edit_news_title").text, a['href']]
 
 class Investing:
@@ -30,13 +28,11 @@ class Investing:
         self.country = country # Message 에 들어갈 녀석
     def get_interest_rage(self) -> Dict[str,Dict[str,List]]:
         message = [[self.country]]
-        start = time.time()
         for n,c in self.code:
             req = requests.get(self.url + c,headers = self.headers)
             bs = BeautifulSoup(req.text, 'html.parser')
             m = bs.find('div',{"class" :"top bold inlineblock"}).text.split() 
             message.append([n] + m) # 3개월 ['3.195', '+0.004', '+0.13%']
-        print(f'{time.time()-start:.3f}ms')# 응답 속도 비교
         return message
 
 naver= ["25212", "25162"]
