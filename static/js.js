@@ -9,7 +9,6 @@ function sendJSON(){
     xhr.send(JSON.stringify({
         "email" : email
     }));
-    alert(email + "가 등록되었습니다");
     document.getElementById("email").value = '';}
     else {
         alert("올바른 이메일 주소를 입력해주세요")
