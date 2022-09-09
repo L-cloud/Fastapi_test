@@ -1,8 +1,7 @@
-from fastapi import FastAPI,Request,Depends,HTTPException
+from fastapi import FastAPI,Request,Depends,status
 from fastapi.responses import HTMLResponse,RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from pydantic import EmailStr,BaseModel
 from typing import Union
 from sqlalchemy.orm import Session
 from sql_app import crud, models, schemas
@@ -10,8 +9,6 @@ from sql_app.database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
 
-class Data(BaseModel):
-    email: EmailStr
 # Dependency
 
 def get_db():
@@ -30,15 +27,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 async def main(request: Request,message:Union[None, str] = None):
     return templates.TemplateResponse('main.html',{"request" : request,"message" :message})
 
-@app.post("/")
-async def main(user: schemas.UserCreate, db: Session = Depends(get_db)):
+@app.post("/add")
+async def add_email(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
     if db_user:
-        return RedirectResponse(url = '/exist',status_code=302)
+        return {"message" : "이미 등록되어있는 메일 주소입니다."}
     crud.create_user(db=db,user=user)
-    return RedirectResponse(url='/', status_code=302)
+    return {"message": user.email + "이 등록되었습니다."}
 
-
-@app.get('/exist')
-async def exist():
-    return {'message' : "already exist"}

@@ -6,16 +6,15 @@
 </head>
 <body class="align">
 
-    <form onsubmit="return false">
+    <form>
       <h3 class="align">이메일 주소를 입력해주세요!</h3>
       <div class="form__field">
         <input type="email" id= "email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form__input" required/>
         <span class="icon"></span>
       </div>
       <p><button class="button-3" id = "button" onclick=sendJSON()>구독하기</button></p>
+      <p><h3><div id = 'message' class = 'align'></div></h3></p>
     </form>
-    {% if message %}
-    <p> {{ message }}</p>
-    {% endif %}
+    
   </body>
   </html>
