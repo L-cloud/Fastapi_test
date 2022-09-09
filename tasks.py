@@ -6,14 +6,13 @@ from typing import List, Dict
 from celery import Celery
 from celery.schedules import crontab
 
+
 app = Celery('tasks', broker='redis://localhost:6379/0', backend='redis://localhost')
 
 app.conf.timezone = 'UTC'
-@app.task
-def add(x, y):
-    z = x + y
-    print(z)
-    return 3
+
+
+
 
 @app.task
 def naver_journal(codes:List[str]) -> None : 
@@ -31,6 +30,7 @@ def investing1(codes:Dict[str,List[str]]) -> None:
     headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36'}
     url =  "https://kr.investing.com/rates-bonds/"
     tempt = defaultdict(list)
+    # 주말 데이터 확인하고 db 뭐 저장할지 정해야함
     for key in codes:
         for n,c in codes[key]:
             req = requests.get(url + c,headers = headers)
@@ -39,15 +39,11 @@ def investing1(codes:Dict[str,List[str]]) -> None:
             tempt[key].append([n] + m)
     return tempt
 
-naver= ["25212", "25162"]
-investing = {'미국':[["10년 물","u.s.-10-year-bond-yield"],["3년 물","u.s.-3-year-bond-yield"]],
-'그리스' : [["5년 물", "greece-5-year-bond-yield"],["10년 물", "greece-5-year-bond-yield"]],
-'독일':[['5년 물','germany-5-year-bond-yield'],['10년 물','germany-10-year-bond-yield']]}
-
 app.conf.beat_schedule = {
     'naver_journal': {  
         'task': 'tasks.naver_journal',  
-        'schedule':crontab(hour=5, minute=0),      
+        'schedule':15,
+        # 'schedule':crontab(hour=5, minute=0),        
         'args': ["25212", "25162"]    
     },
     'investing' : {

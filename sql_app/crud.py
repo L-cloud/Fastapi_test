@@ -6,15 +6,16 @@ def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
 
-def create_user(db: Session, user: schemas.UserCreate):
+def create_user(db: Session, user
+: schemas.UserCreate):
     db_user = models.User(email=user.email)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return True
 
-def get_Njournals_by_url(db: Session, url : str):
-    return db.query(models.Njournal).filter(models.Njournal.url == url).first()
+def get_Njournals_by_url(db: Session, skip: int = 0, limit: int = 15):
+    return db.query(models.Njournal).offset(skip).limit(limit).all()
 
 
 def create_Njournal(db: Session, journal: schemas.NjournalCreate):
