@@ -1,5 +1,5 @@
-from fastapi import FastAPI,Request,Depends,status
-from fastapi.responses import HTMLResponse,RedirectResponse
+from fastapi import FastAPI,Request,Depends
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from typing import Union
@@ -30,6 +30,7 @@ async def main(request: Request,message:Union[None, str] = None):
 @app.post("/add")
 async def add_email(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, email=user.email)
+    print(user,type(user), db, type(db))
     if db_user:
         return {"message" : "이미 등록되어있는 메일 주소입니다."}
     crud.create_user(db=db,user=user)

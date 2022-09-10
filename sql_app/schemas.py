@@ -9,8 +9,6 @@ class NjournalCreate(NjournalBase):
 
 class Njournal(NjournalBase):
     id: int
-    url: str
-
     class Config:
         orm_mode = True
 
