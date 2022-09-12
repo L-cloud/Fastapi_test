@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
-
 class NjournalBase(BaseModel):
     url: str
     
@@ -23,3 +22,14 @@ class User(UserBase):
     id: int
     class Config:
         orm_mode = True
+
+class DailyRateBase(BaseModel):
+    date : str
+
+class DailyRateCreate(DailyRateBase):
+    pass
+
+class DailyRate(DailyRateBase):
+    id : int
+    class Config:
+        orm_mod = True
