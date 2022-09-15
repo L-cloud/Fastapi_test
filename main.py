@@ -6,6 +6,8 @@ from typing import Union
 from sqlalchemy.orm import Session
 from sql_app import crud, models, schemas
 from sql_app.database import SessionLocal, engine
+from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
+import os
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -36,3 +38,20 @@ async def add_email(user: schemas.UserCreate, db: Session = Depends(get_db)):
     crud.create_user(db=db,user=user)
     return {"message": user.email + "이 등록되었습니다."}
 
+
+conf = ConnectionConfig(
+    MAIL_USERNAME = os.getenv("User_mail"),
+    MAIL_PASSWORD = os.getenv('User_password'),
+    MAIL_FROM = os.getenv("User_mail"),
+    MAIL_PORT = 587,
+    MAIL_SERVER = "smtp.gmail.com",
+    MAIL_FROM_NAME="Desired Name",
+    MAIL_TLS = True,
+    MAIL_SSL = False,
+    USE_CREDENTIALS = True,
+    VALIDATE_CERTS = True
+)
+
+fm = FastMail(conf)
+
+x = 10
