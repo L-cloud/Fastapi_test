@@ -53,5 +53,3 @@ conf = ConnectionConfig(
 )
 
 fm = FastMail(conf)
-
-x = 10

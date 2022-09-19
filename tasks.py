@@ -75,8 +75,8 @@ def make_mail():
         html = ''
         for key in messages:
             html += f'<p> {key}  {messages[key]} </p>'
-        print(html)
-        async_to_sync(send_mail)(html,users)
+        if html:
+            async_to_sync(send_mail)(html,users)
     return
 async def send_mail(html:str,users:List[str]):
     
@@ -86,7 +86,6 @@ async def send_mail(html:str,users:List[str]):
         body=html,
         subtype="html"
         )
-    
     await fm.send_message(mail)
     
     return
@@ -94,6 +93,6 @@ async def send_mail(html:str,users:List[str]):
 app_celery.conf.beat_schedule = {
     'send_mail':{
         'task' : 'tasks.make_mail',
-        'schedule' : 15,
+        'schedule' : crontab(hour=5, minute=0),
     }
 }
